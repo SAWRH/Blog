@@ -1,5 +1,5 @@
 <?php 
-session_start();
+require_once("session.php");
 
 
 if(isset($_GET["name"]) && $_GET["email"] && $_GET["password"])
@@ -26,11 +26,21 @@ if(isset($_GET["name"]) && $_GET["email"] && $_GET["password"])
 	
     if ($result = $conn->query($sql))
 	{
-		echo true;
+        $_SESSION['user'] = 
+		[
+			
+			'name' => $name,
+            'email' => $email
+            
+			
+		];
+	//	echo json_encode($_SESSION['user']); 
+        require_once("getSessionVars.php");
+
 	}
     else
     {
-        echo false;
+        echo '';
     }
     
 	

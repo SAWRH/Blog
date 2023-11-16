@@ -1,10 +1,10 @@
 <?php
 session_start();
-/*DEBUG*///print_r($_GET);
-if (isset($_GET["login"]) && isset($_GET["password"])) {   
+//print_r($_POST);// DEBUG
+if (isset($_POST["login"]) && isset($_POST["password"])) {   
     
-	$login = $_GET["login"];
-	$password = $_GET["password"];
+	$login = $_POST["login"];
+	$password = $_POST["password"];
 	//echo "DEBUG получили лигин и пароль $login $password";
     define('DBSERVER', 'localhost'); // Database server
     define('DBUSERNAME', 'root'); // Database username
