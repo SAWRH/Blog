@@ -1,6 +1,7 @@
 <?php
 session_start();
 //print_r($_POST);// DEBUG
+//echo "POST:".print_r($_POST);
 if (isset($_POST["login"]) && isset($_POST["password"])) {   
     
 	$login = $_POST["login"];
@@ -14,7 +15,7 @@ if (isset($_POST["login"]) && isset($_POST["password"])) {
     /* connect to MySQL database */
     $conn = new mysqli(DBSERVER, DBUSERNAME, DBPASSWORD, DBNAME); // Создает соединение
 	$conn->set_charset("utf8mb4");// Устанавливает кодировку
-	$resdata=[];
+	
     
     // Check db connection
     if($conn->connect_error){
@@ -26,15 +27,25 @@ if (isset($_POST["login"]) && isset($_POST["password"])) {
 	{
 		if ($result->num_rows>0)
 		{
+			$row=$result->fetch_assoc();
 		//	echo "DEBUG Пользователь авторизован";
-			$resdata["author"]="yes";
+			$_SESSION['user'] = 
+			[
+				
+				'name' => $row['name'],
+				'email' => $row['email']
+				
+				
+			];
+		//	require_once("getSessionVars.php");
+			echo 'done';
 		}else
 		{
 		//	echo "DEBUG Пользователь не авторизован";
-			$resdata["author"]="no";
+			echo '';
 		}
-		$resdata = json_encode($resdata);
-		echo $resdata; // В результате выполнения скрипта выдается JSON
+		
+
 	}
 	//echo "DEBUG Скрипт завершен";
 }

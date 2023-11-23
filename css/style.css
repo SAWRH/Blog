@@ -10,9 +10,13 @@
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
-   
 }
-.form{
-    display: block;
+.forma{
+    border: none;
     background-color: white;
 }
+.forma2{
+    border: none;
+    background-color: white;
+}
+

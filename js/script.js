@@ -6,7 +6,9 @@ var app = new Vue({
             auth_block_vis: 'yes',
             display_login: 0,
             display_signin: 0,
-            name_user: ''
+            name_user: '',
+            add_button: 0,
+            display_addArticle_form: 0
         },
         user_login:{
             login:"",
@@ -21,7 +23,7 @@ var app = new Vue({
         {
             caption: 'efgverfvwfvw',
             date: 'wfvwerf',
-            text: 'wvfvwfvcwer',
+            content: 'wvfvwfvcwer',
             author: 'wvwfvcwfvc',
         },
         
@@ -30,7 +32,7 @@ var app = new Vue({
     },
     
     methods:{
-        async checkSession() // Метод на
+        async checkSession() 
         {
             
             let response = await fetch('getSessionVars.php');
@@ -41,33 +43,18 @@ var app = new Vue({
                 let sess = JSON.parse(text);
                 this.visible_props.name_user = sess.user.name;
                 this.visible_props.auth_block_vis = 0;
+                this.visible_props.add_button = 1;
             }else{
-                /* Параметры по умолчанию */
+                
                 this.visible_props.name_user ='';
                 this.visible_props.auth_block_vis = 1;
+                this.visible_props.add_button = 0;
             }
 
         },
         async authorize()
         {
             
-            /*let user = { login: this.user_login.login, password: this.user_login.password };
-              
-              let response = await fetch('author.php?login=' + user.login + '&password=' + user.password);
-              let json = await response.text();
-              
-              result = JSON.parse(json);
-              if(result.author=="yes")
-              {
-                this.visible_props.auth_block_vis = 0;
-              }
-              else
-              {
-                alert("no users found");
-              }*/
-
-
-
             let data = new FormData();
             data.append("login", this.user_login.login);
             data.append("password", this.user_login.password);
@@ -75,14 +62,14 @@ var app = new Vue({
             let response_post = await fetch(url,{method: 'POST', body: data});
             
             let result_post = await response_post.text();
-            alert("Ответ "+result_post);
-          
-            result_json = JSON.parse(result_post);
             
-              if(result_json.author=="yes")
+          
+            
+            
+              if(result_post=='done')
               {
-                this.visible_props.auth_block_vis = 'no';
                 
+                this.checkSession();
               }
               else
               {
@@ -93,31 +80,27 @@ var app = new Vue({
         async register()
         {
             
-            let user = {
-                name: this.users.name,
-                email: this.users.email,
-                password: this.users.password
-            };
-            let response = await fetch('register_script.php?name=' + user.name + '&email='+user.email + '&password=' + user.password );
             
-            let text = await response.text(); // Сделали текст из responce
-            sessionStorage.setItem('myData', JSON.stringify(text));
+            
+            let data = new FormData();
+            data.append("name", this.users.name);
+            data.append("email", this.users.email);
+            data.append("password", this.users.password);
+            let url = "register_script.php";
+            let response_post = await fetch(url,{method: 'POST', body: data});
+            
+            
+            let result_post = await response_post.text();
+            
+          
 
-            if(text !== '')
+            if(result_post != '')
             {
-                /*
-                alert(text);
-                let sessData = JSON.parse(text);
-
-            //    this.$session.start();
-            //    this.$session.set("jwt", token);
-                this.visible_props.name_user = sessData.name;
-                this.visible_props.auth_block_vis = 0;*/
                 this.checkSession();
             }
             else
             {
-                alert("no users found");
+                alert("registration failed");
             }
         },
 
@@ -132,19 +115,29 @@ var app = new Vue({
 
         async log_out(){
             let response = await fetch("kill_session.php");
-            let text = await response.text(); // Сделали текст из responce
+            let text = await response.text(); 
             
             if(text == true)
             {
                 alert("Session killed sucsefully");
-                //this.visible_props.auth_block_vis = 1;
-                //this.name_user = '';
+
                 this.checkSession();
             }
             else
             {
                 alert("Ошибка выхода из аккаунта");
             }
+        },
+
+        async add_article(){
+            let data = new FormData();
+            data.append("caption", this.articles.caption);
+            data.append("content", this.articles.content);
+            let url = "add_article.php";
+            let response_post = await fetch(url,{method: 'POST', body: data});
+
+            let result_post = await response_post.text();
+            alert(result_post);
         }
     },
     mounted(){
